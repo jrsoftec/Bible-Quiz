@@ -83,3 +83,4 @@ class QuestionCreateForm(BaseModel):
     choices: List[str]
     correct_choice_index: int
     youtube_url: Optional[HttpUrl] = None
+    image_url: Optional[HttpUrl] = None

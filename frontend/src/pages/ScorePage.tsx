@@ -7,10 +7,25 @@ interface Props {
 
 export default function ScorePage({ token }: Props) {
   const [score, setScore] = useState<{ total_answered: number; total_correct: number; accuracy: number } | null>(null)
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    fetchScore(token).then(setScore)
+    fetchScore(token)
+      .then(setScore)
+      .catch((err) => {
+        const message = err instanceof Error ? err.message : 'Failed to load score'
+        setError(message)
+      })
   }, [token])
+
+  if (error) {
+    return (
+      <main className="container">
+        <h1>Score</h1>
+        <p className="error">{error}</p>
+      </main>
+    )
+  }
 
   if (!score) {
     return (

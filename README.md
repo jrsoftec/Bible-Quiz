@@ -2,7 +2,7 @@
 
 ## Overview
 
-Bible Quiz is a full-stack quiz application built with React, FastAPI, and PostgreSQL. It provides:
+Bible Quiz is a full-stack quiz application built with React, FastAPI, and SQLite. It provides:
 
 - User registration and login
 - Admin login and question management
@@ -13,9 +13,9 @@ Bible Quiz is a full-stack quiz application built with React, FastAPI, and Postg
 
 ## Repository structure
 
-- `backend/` — FastAPI API, database models, and upload handling
+- `backend/` — FastAPI API, database models, and upload handling with a local SQLite database
 - `frontend/` — React/Vite application
-- `docker-compose.yml` — PostgreSQL + backend service configuration
+- `docker-compose.yml` — SQLite backend service configuration
 
 ## Local setup
 
@@ -79,4 +79,4 @@ VITE_API_URL=http://localhost:8000
 
 - Admin credentials are set by environment variables in `docker-compose.yml`
 - Uploaded images are served under `/uploads`
-- The backend uses a local PostgreSQL database in Docker
+- The backend uses a local SQLite database file in Docker

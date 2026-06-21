@@ -13,9 +13,12 @@ export default function AdminPage({ token }: Props) {
   const [imageUrl, setImageUrl] = useState('')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [message, setMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   const submitSingle = async (event: React.FormEvent) => {
     event.preventDefault()
+    setMessage('')
+    setErrorMessage('')
     try {
       let uploadedUrl = imageUrl
       if (imageFile) {
@@ -31,11 +34,14 @@ export default function AdminPage({ token }: Props) {
       })
       setMessage('Question uploaded successfully')
     } catch (error) {
-      setMessage('Failed to upload question')
+      const message = error instanceof Error ? error.message : 'Failed to upload question'
+      setErrorMessage(message)
     }
   }
 
   const submitBulk = async () => {
+    setMessage('')
+    setErrorMessage('')
     const payload = [
       {
         text: 'Who built the ark?',
@@ -47,7 +53,8 @@ export default function AdminPage({ token }: Props) {
       await bulkCreateQuestions(token, payload)
       setMessage('Bulk upload sent')
     } catch (error) {
-      setMessage('Bulk upload failed')
+      const message = error instanceof Error ? error.message : 'Bulk upload failed'
+      setErrorMessage(message)
     }
   }
 
@@ -98,7 +105,8 @@ export default function AdminPage({ token }: Props) {
         <button type="submit">Upload Question</button>
       </form>
       <button onClick={submitBulk}>Upload Sample Bulk Questions</button>
-      {message && <p>{message}</p>}
+      {message && <p style={{ color: 'green' }}>{message}</p>}
+      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
     </main>
   )
 }

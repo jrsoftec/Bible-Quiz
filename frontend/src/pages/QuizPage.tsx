@@ -9,21 +9,41 @@ export default function QuizPage({ token }: Props) {
   const [questions, setQuestions] = useState<any[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [feedback, setFeedback] = useState('')
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    fetchQuestions(token).then(setQuestions)
+    fetchQuestions(token)
+      .then(setQuestions)
+      .catch((err) => {
+        const message = err instanceof Error ? err.message : 'Failed to load questions'
+        setError(message)
+      })
   }, [token])
 
   const question = questions[currentIndex]
 
   const handleAnswer = async (choiceId: number) => {
     if (!question) return
-    const result = await submitAnswer(token, question.id, choiceId)
-    setFeedback(result.correct ? 'Correct!' : 'Incorrect.')
-    setTimeout(() => {
-      setFeedback('')
-      setCurrentIndex((index) => Math.min(index + 1, questions.length - 1))
-    }, 1000)
+    try {
+      const result = await submitAnswer(token, question.id, choiceId)
+      setFeedback(result.correct ? 'Correct!' : 'Incorrect.')
+      setTimeout(() => {
+        setFeedback('')
+        setCurrentIndex((index) => Math.min(index + 1, questions.length - 1))
+      }, 1000)
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to submit answer'
+      setError(message)
+    }
+  }
+
+  if (error) {
+    return (
+      <main className="container">
+        <h1>Quiz</h1>
+        <p className="error">{error}</p>
+      </main>
+    )
   }
 
   if (!question) {

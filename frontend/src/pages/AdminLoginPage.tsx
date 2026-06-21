@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { login } from '../api'
 
 interface Props {
@@ -6,12 +7,14 @@ interface Props {
 }
 
 export default function AdminLoginPage({ onLogin }: Props) {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    setError('')
     try {
       const data = await login(email, password)
       if (!data.is_admin) {
@@ -19,8 +22,10 @@ export default function AdminLoginPage({ onLogin }: Props) {
         return
       }
       onLogin(data.access_token)
+      navigate('/admin')
     } catch (err) {
-      setError('Login failed. Check credentials.')
+      const message = err instanceof Error ? err.message : 'Login failed. Check credentials.'
+      setError(message)
     }
   }
 
